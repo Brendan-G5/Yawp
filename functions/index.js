@@ -3,12 +3,20 @@ const app = require('express')();
 
 const FBAuth = require('./util/fbAuth');
 
-const { getAllScreams, postScream } = require('./handlers/yawps')
+const { getAllYawps, postYawp, getYawp, commentOnYawp } = require('./handlers/yawps')
 const { signUp, login, uploadImage, addUserDetails, getAuthenticatedUser } = require('./handlers/users')
 
-//Scream Routes
-app.get('/yawps', getAllScreams);
-app.post('/yawp', FBAuth, postScream);
+//Yawp Routes
+app.get('/yawps', getAllYawps);
+app.post('/yawp', FBAuth, postYawp);
+app.get('/yawp/:yawpId', getYawp);
+app.post('/yawp/:yawpId/comment', FBAuth, commentOnYawp);
+// TODO: delete yawp
+// TODO: like yawp
+// TODO: unlike yawp
+// TODO: deltee yawp
+
+
 
 //User Routes
 app.post('/signup', signUp);
