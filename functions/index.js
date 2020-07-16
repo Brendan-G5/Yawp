@@ -3,7 +3,7 @@ const app = require('express')();
 
 const FBAuth = require('./util/fbAuth');
 
-const { getAllYawps, postYawp, getYawp, commentOnYawp } = require('./handlers/yawps')
+const { getAllYawps, postYawp, getYawp, commentOnYawp, likeYawp, unlikeYawp, deleteYawp } = require('./handlers/yawps')
 const { signUp, login, uploadImage, addUserDetails, getAuthenticatedUser } = require('./handlers/users')
 
 //Yawp Routes
@@ -11,10 +11,11 @@ app.get('/yawps', getAllYawps);
 app.post('/yawp', FBAuth, postYawp);
 app.get('/yawp/:yawpId', getYawp);
 app.post('/yawp/:yawpId/comment', FBAuth, commentOnYawp);
+app.get('/yawp/:yawpId/like', FBAuth, likeYawp)
+app.get('/yawp/:yawpId/unlike', FBAuth, unlikeYawp)
+app.delete('/yawp/:yawpId', FBAuth, deleteYawp)
+
 // TODO: delete yawp
-// TODO: like yawp
-// TODO: unlike yawp
-// TODO: deltee yawp
 
 
 
