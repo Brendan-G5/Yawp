@@ -6,7 +6,7 @@ const FBAuth = require('./util/fbAuth');
 const { db } = require('./util/admin')
 
 const { getAllYawps, postYawp, getYawp, commentOnYawp, likeYawp, unlikeYawp, deleteYawp } = require('./handlers/yawps')
-const { signUp, login, uploadImage, addUserDetails, getAuthenticatedUser } = require('./handlers/users')
+const { signUp, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users')
 
 //Yawp Routes
 app.get('/yawps', getAllYawps);
@@ -24,6 +24,8 @@ app.post('/login', login)
 app.post('/user/image', FBAuth, uploadImage)
 app.post('/user', FBAuth, addUserDetails)
 app.get('/user', FBAuth, getAuthenticatedUser)
+app.get('/user/:handle', getUserDetails)
+app.post('/notifications', FBAuth, markNotificationRead)
 
 exports.api = functions.https.onRequest(app);
 
