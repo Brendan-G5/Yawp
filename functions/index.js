@@ -28,9 +28,9 @@ app.get('/user', FBAuth, getAuthenticatedUser)
 exports.api = functions.https.onRequest(app);
 
 exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
-  .onCreate(snapshot => {
-    db.doc(`/yawps/${snapshot.data().screamId}`).get()
-      .then(doc => {
+  .onCreate((snapshot) => {
+    db.doc(`/yawps/${snapshot.data().yawpId}`).get()
+      .then((doc) => {
         if (doc.exists) {
           return db.doc(`/notifications/${snapshot.id}`).set({
             createdAt: new Date().toISOString(),
@@ -52,22 +52,22 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
   });
 
 exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}')
-.onDelete(snapshot => {
+.onDelete((snapshot) => {
   db.doc(`/notifications/${snapshot.id}`)
-    .delete()
-    .then(() => {
-      return;
-    })
-    .catch(err => {
+  .delete()
+  .then(() => {
+    return;
+  })
+  .catch(err => {
       console.error(err);
-      return
+      return;
     })
 
 })
 
 exports.createNotificationOnComment = functions.firestore.document('comments/{id}')
   .onCreate(snapshot => {
-    db.doc(`/yawps/${snapshot.data().screamId}`).get()
+    db.doc(`/yawps/${snapshot.data().yawpId}`).get()
       .then(doc => {
         if (doc.exists) {
           return db.doc(`/notifications/${snapshot.id}`).set({

@@ -1,5 +1,4 @@
 const { db } = require('../util/admin');
-const { request } = require('express');
 
 exports.getAllYawps = (req, res) => {
   db.collection('yawps').orderBy('createdAt', 'desc').get()
