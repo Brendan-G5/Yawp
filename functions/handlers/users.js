@@ -53,7 +53,7 @@ exports.signUp = (req, res) => {
       if (err.code === 'auth/email-already-in-use') {
         return res.status(400).json({ email: 'email is already in use' });
       } else {
-        return res.status(500).json({ error: err.code })
+        return res.status(500).json({ general: 'Something went wrong, please try again' })
       }
     })
 }
@@ -77,11 +77,7 @@ exports.login = (req, res) => {
     })
     .catch(err => {
       console.error(err)
-      if (err.code === "auth/wrong-password") {
-        return res.status(403).json({ general: 'Wrong Credentials' })
-      } else {
-        return res.status(500).json({ error: err.code })
-      }
+      return res.status(403).json({ general: 'Wrong Credentials, please try again' })
     })
 }
 
@@ -112,16 +108,16 @@ exports.getUserDetails = (req, res) => {
       }
     })
     .then(data => {
-      userData.screams = [];
+      userData.yawps = [];
       data.forEach(doc => {
-        userData.screams.push({
+        userData.yawps.push({
           body: doc.data().body,
           createdAt: doc.data().createdAt,
           userHandle: doc.data().userHandle,
           userImage: doc.data().userImage,
           likeCount: doc.data().likeCount,
           commentCount: doc.data().commentCount,
-          screamId: doc.id
+          yawpId: doc.id
         })
       })
       return res.json(userData);

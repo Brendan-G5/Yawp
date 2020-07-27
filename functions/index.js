@@ -31,9 +31,9 @@ exports.api = functions.https.onRequest(app);
 
 exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
   .onCreate((snapshot) => {
-    db.doc(`/yawps/${snapshot.data().yawpId}`).get()
+    return db.doc(`/yawps/${snapshot.data().yawpId}`).get()
       .then((doc) => {
-        if (doc.exists) {
+        if (doc.exists && doc.data().userHandle !== snapshot.data().user) {
           return db.doc(`/notifications/${snapshot.id}`).set({
             createdAt: new Date().toISOString(),
             recipiant: doc.data().userHandle,
@@ -44,22 +44,15 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
           })
         }
       })
-      .then(() => {
-        return;
-      })
       .catch(err => {
         console.error(err)
-        return;
       });
   });
 
 exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}')
 .onDelete((snapshot) => {
-  db.doc(`/notifications/${snapshot.id}`)
+  return db.doc(`/notifications/${snapshot.id}`)
   .delete()
-  .then(() => {
-    return;
-  })
   .catch(err => {
       console.error(err);
       return;
@@ -69,9 +62,9 @@ exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}')
 
 exports.createNotificationOnComment = functions.firestore.document('comments/{id}')
   .onCreate(snapshot => {
-    db.doc(`/yawps/${snapshot.data().yawpId}`).get()
+    return db.doc(`/yawps/${snapshot.data().yawpId}`).get()
       .then(doc => {
-        if (doc.exists) {
+        if (doc.exists && doc.data().userHandle !== snapshot.data().user) {
           return db.doc(`/notifications/${snapshot.id}`).set({
             createdAt: new Date().toISOString(),
             recipiant: doc.data().userHandle,
@@ -82,11 +75,54 @@ exports.createNotificationOnComment = functions.firestore.document('comments/{id
           })
         }
       })
-      .then(() => {
-        return;
-      })
       .catch(err => {
         console.error(err)
         return;
       });
   });
+
+exports.onUserImageChange = functions.firestore.document('users/{userId}')
+  .onUpdate((change) => {
+    if (change.before.data().imageUrl !== change.after.data().imageUrl) {
+      const batch = db.batch();
+      return db.collection('yawps').where('userHandle', '==', change.before.data().handle).get()
+        .then(data => {
+          data.forEach(doc => {
+            const yawp = db.doc(`/yawps/${doc.id}`);
+            batch.update(yawp, {
+              userImage: change.after.data().imageUrl
+            })
+          })
+          return batch.commit();
+        })
+    } else return true;
+  })
+
+exports.onYawpDelete = functions.firestore.document('yawps/{yawpId}')
+  .onDelete((snapshot, context) => {
+    const yawpId = context.params.yawpId;
+    const batch = db.batch();
+    return db.collection('comments').where('yawpId', '==', yawpId).get()
+      .then(data => {
+        data.forEach(doc => {
+          batch.delete(db.doc(`/comments/${doc.id}`))
+        })
+        return db.collection('likes').where('yawpId', '==', yawpId).get()
+      })
+      .then(data => {
+        data.forEach(doc => {
+          batch.delete(db.doc(`/likes/${doc.id}`))
+        })
+        return db.collection('notifications').where('yawpId', '==', yawpId).get()
+      })
+      .then(data => {
+        data.forEach(doc => {
+          batch.delete(db.doc(`/notifications/${doc.id}`))
+        })
+        return batch.commit();
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
+  })
