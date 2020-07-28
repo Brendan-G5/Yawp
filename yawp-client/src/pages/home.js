@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid'
 import axios from 'axios';
+import Yawp from '../components/Yawp'
 
 export class home extends Component {
   state = {
@@ -17,7 +18,7 @@ export class home extends Component {
   }
   render() {
     let recentYawpsMarkup = this.state.yawps ? (
-    this.state.yawps.map(yawp => <p>{yawp.body}</p>)
+    this.state.yawps.map(yawp => <Yawp key = {yawp.yawpId} yawp={yawp}/>)
     ) : <p>Loading...</p>
     return (
     <Grid container spacing={3}>
