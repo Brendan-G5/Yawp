@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
 import AppIcon from '../images/yawp.png';
+import axios from 'axios';
+import {Link} from 'react-router-dom'
+
 
 //MUI
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 const styles ={
   form: {
@@ -23,7 +28,16 @@ const styles ={
     margin: '10px auto'
   },
   button: {
-    marginTop: '20px'
+    marginTop: '20px',
+    position: 'relative'
+  },
+  customError: {
+    color: 'red',
+    fontSize: '0.8rem',
+    marginTop: 10
+  },
+  progress: {
+    position: 'absolute'
   }
 };
 
@@ -35,12 +49,32 @@ export class login extends Component {
       email:'',
       password:'',
       loading: false,
-      error: {}
+      errors: {}
     }
   }
 
   handleSubmit = event => {
-    console.log('hi');
+    event.preventDefault();
+    this.setState({
+      loading: true
+    })
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    }
+    axios.post('/login', userData)
+      .then(res => {
+        this.setState({
+          loading: false
+        });
+        this.props.history.push('/')
+      })
+      .catch(err => {
+        this.setState({
+          errors: err.response.data,
+          loading: false
+        })
+      })
   }
 
   handleChange = event => {
@@ -51,22 +85,35 @@ export class login extends Component {
 
   render() {
     const {classes} = this.props;
+    const {errors, loading} = this.state;
     return (
       <Grid container className={classes.form}>
         <Grid item sm/>
         <Grid item sm>
-          <img src={AppIcon} alt="app Image" className = {classes.image}/>
+          <img src={AppIcon} alt="logo" className = {classes.image}/>
           <Typography variant="h2" className={classes.pageTitle}>
             Login
           </Typography>
           <form noValidate onSubmit={this.handleSubmit}>
             <TextField id ="email" name ="email" type ="email" label = "Email"
             className = {classes.textField} value = {this.state.email} onChange={this.handleChange}
-            fullWidth/>
+            fullWidth helperText = {errors.email} error={errors.email ? true : false}/>
             <TextField id ="password" name ="password" type ="password" label = "Password"
             className = {classes.textField} value = {this.state.password} onChange={this.handleChange}
-            fullWidth/>
-            <Button type="submit" variant="contained" color="primary" className={classes.button}>Login</Button>
+            fullWidth helperText = {errors.password} error={errors.password ? true : false}/>
+            {errors.general && (
+              <Typography variant="body2" className={classes.customError}>
+                {errors.general}
+              </Typography>
+            )}
+            <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={loading}>
+              Login
+              {loading && (
+                <CircularProgress size ={30} className={classes.progress}/>
+              )}
+            </Button>
+            <br/>
+            <small>Dont have an account? Sing Up <Link to ='/signup'>Here!</Link></small>
           </form>
 
         </Grid>
