@@ -3,7 +3,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
 import AppIcon from '../images/yawp.png';
 import axios from 'axios';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 //MUI
@@ -14,40 +14,19 @@ import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
-const styles ={
-  form: {
-    textAlign: 'center'
-  },
-  image: {
-    margin: '20px auto'
-  },
-  pageTitle: {
-    margin: '10px auto'
-  },
-  textField: {
-    margin: '10px auto'
-  },
-  button: {
-    marginTop: '20px',
-    position: 'relative'
-  },
-  customError: {
-    color: 'red',
-    fontSize: '0.8rem',
-    marginTop: 10
-  },
-  progress: {
-    position: 'absolute'
-  }
-};
+const styles = (theme) => ({
+  ...theme.spreadThis
+})
 
 
-export class login extends Component {
-  constructor(){
+export class signup extends Component {
+  constructor() {
     super();
     this.state = {
-      email:'',
-      password:'',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      handle: '',
       loading: false,
       errors: {}
     }
@@ -58,12 +37,15 @@ export class login extends Component {
     this.setState({
       loading: true
     })
-    const userData = {
+    const newUserData = {
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
+      confirmPassword: this.state.confirmPassword,
+      handle: this.state.handle
     }
-    axios.post('/login', userData)
+    axios.post('/signup', newUserData)
       .then(res => {
+        localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`)
         this.setState({
           loading: false
         });
@@ -84,47 +66,89 @@ export class login extends Component {
   }
 
   render() {
-    const {classes} = this.props;
-    const {errors, loading} = this.state;
+    const { classes } = this.props;
+    const { errors, loading } = this.state;
     return (
       <Grid container className={classes.form}>
-        <Grid item sm/>
+        <Grid item sm />
         <Grid item sm>
-          <img src={AppIcon} alt="logo" className = {classes.image}/>
+          <img src={AppIcon} alt="logo" className={classes.image} />
           <Typography variant="h2" className={classes.pageTitle}>
-            Login
+            Signup
           </Typography>
           <form noValidate onSubmit={this.handleSubmit}>
-            <TextField id ="email" name ="email" type ="email" label = "Email"
-            className = {classes.textField} value = {this.state.email} onChange={this.handleChange}
-            fullWidth helperText = {errors.email} error={errors.email ? true : false}/>
-            <TextField id ="password" name ="password" type ="password" label = "Password"
-            className = {classes.textField} value = {this.state.password} onChange={this.handleChange}
-            fullWidth helperText = {errors.password} error={errors.password ? true : false}/>
+            <TextField
+              id="email"
+              name="email"
+              type="email"
+              label="Email"
+              className={classes.textField}
+              value={this.state.email}
+              onChange={this.handleChange}
+              fullWidth
+              helperText={errors.email}
+              error={errors.email ? true : false}
+            />
+            <TextField
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              className={classes.textField}
+              value={this.state.password}
+              onChange={this.handleChange}
+              fullWidth
+              helperText={errors.password}
+              error={errors.password ? true : false}
+              />
+              <TextField
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              label="Confirm Password"
+              className={classes.textField}
+              value={this.state.confirmPassword}
+              onChange={this.handleChange}
+              fullWidth
+              helperText={errors.password}
+              error={errors.confirmPassword ? true : false}
+              />
+              <TextField
+              id="handle"
+              name="handle"
+              type="text"
+              label="Handle"
+              className={classes.textField}
+              value={this.state.handle}
+              onChange={this.handleChange}
+              fullWidth
+              helperText={errors.handle}
+              error={errors.handle ? true : false}
+              />
             {errors.general && (
               <Typography variant="body2" className={classes.customError}>
                 {errors.general}
               </Typography>
             )}
             <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={loading}>
-              Login
+              Sign Up
               {loading && (
-                <CircularProgress size ={30} className={classes.progress}/>
+                <CircularProgress size={30} className={classes.progress} />
               )}
             </Button>
-            <br/>
-            <small>Dont have an account? Sing Up <Link to ='/signup'>Here!</Link></small>
+            <br />
+            <small>Have an account? Login<Link to='/login'>Here!</Link></small>
           </form>
 
         </Grid>
-        <Grid item sm/>
+        <Grid item sm />
       </Grid>
     )
   }
 }
 
-login.propTypes = {
+signup.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(login);
+export default withStyles(styles)(signup);
