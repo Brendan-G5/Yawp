@@ -12,13 +12,15 @@ import Paper from '@material-ui/core/Paper';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
 
 //Icons
 import LocationOn from '@material-ui/icons/LocationOn';
+import EditIcon from '@material-ui/icons/Edit';
 import LinkIcon from '@material-ui/icons/Link';
 import CalendarToday from '@material-ui/icons/CalendarToday';
+import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
+
 
 
 //Redux
@@ -42,6 +44,10 @@ class Profile extends Component {
   handleEditPicture = () => {
     const fileInput = document.getElementById('imageInput');
     fileInput.click()
+  }
+
+  handleLogout = () => {
+    this.props.logoutUser();
   }
 
   render() {
@@ -95,6 +101,13 @@ class Profile extends Component {
             <CalendarToday color='primary' /> {'  '}
             <span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>
           </div>
+          <Tooltip title='logout' placement='top'>
+            <IconButton onClick ={this.handleLogout}>
+              <KeyboardReturn color='primary'>
+
+              </KeyboardReturn>
+            </IconButton>
+          </Tooltip>
         </div>
       </Paper>
     ) : (
