@@ -1,4 +1,4 @@
-import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER} from '../types';
+import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, LIKE_YAWP, UNLIKE_YAWP} from '../types';
 
 const initialState = {
   authenticated: false,
@@ -28,6 +28,22 @@ export default function(state = initialState, action) {
         ...state,
         loading: true
       }
+    case LIKE_YAWP:
+      return {
+        ...state,
+        likes:[
+          ...state.likes,{
+            userHandle: state.credentials.userHandle,
+            yawpId: action.payload.yawpId
+          }
+        ]
+      }
+    case UNLIKE_YAWP:
+      return {
+        ...state,
+        likes: state.likes.filter(like => like.yawpId !== action.payload.yawpId)
+      }
+
     default:
       return state;
   }

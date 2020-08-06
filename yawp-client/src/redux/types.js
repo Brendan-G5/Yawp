@@ -8,6 +8,11 @@ export const LOADING_USER = 'LOADING_USER';
 export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADING_UI';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const LOADING_DATA = 'LOADING_DATA';
 
-//UI data types
+//Data types
+export const SET_YAWPS = 'SET_YAWPS';
+export const SET_YAWP = 'SET_YAWP';
+export const LIKE_YAWP = 'LIKE_YAWP';
+export const UNLIKE_YAWP = 'UNLIKE_YAWP';
 
