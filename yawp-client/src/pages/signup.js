@@ -131,7 +131,7 @@ export class signup extends Component {
               )}
             </Button>
             <br />
-            <small>Have an account? Login<Link to='/login'>Here!</Link></small>
+            <small>Have an account? Login <Link to='/login'>Here!</Link></small>
           </form>
 
         </Grid>

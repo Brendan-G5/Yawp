@@ -15,4 +15,6 @@ export const SET_YAWPS = 'SET_YAWPS';
 export const SET_YAWP = 'SET_YAWP';
 export const LIKE_YAWP = 'LIKE_YAWP';
 export const UNLIKE_YAWP = 'UNLIKE_YAWP';
+export const DELETE_YAWP = 'DELETE_YAWP';
+
 

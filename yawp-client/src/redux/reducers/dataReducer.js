@@ -1,4 +1,4 @@
-import { SET_YAWPS, LIKE_YAWP, UNLIKE_YAWP, LOADING_DATA } from '../types';
+import { SET_YAWPS, LIKE_YAWP, UNLIKE_YAWP, LOADING_DATA, DELETE_YAWP } from '../types';
 
 const initialState = {
   yawps: [],
@@ -21,10 +21,16 @@ export default function(state =initialState, action) {
       }
     case LIKE_YAWP:
     case UNLIKE_YAWP:
-      let index = state.yawps.findIndex((yawp) => yawp.yawpId === action.payload.yawpId);
-      state.yawps[index] = action.payload;
+      let likeIndex = state.yawps.findIndex((yawp) => yawp.yawpId === action.payload.yawpId);
+      state.yawps[likeIndex] = action.payload;
       return {
         ...state,
+      }
+    case DELETE_YAWP:
+      let delIndex = state.yawps.findIndex((yawp) => yawp.yawpId === action.payload);
+      state.yawps.splice(delIndex, 1);
+      return {
+        ...state
       }
     default:
       return {

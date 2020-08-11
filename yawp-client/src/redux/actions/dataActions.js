@@ -1,4 +1,4 @@
-import { SET_YAWPS, LOADING_DATA, LIKE_YAWP, UNLIKE_YAWP, LOADING_UI } from '../types';
+import { SET_YAWPS, LOADING_DATA, LIKE_YAWP, UNLIKE_YAWP, DELETE_YAWP } from '../types';
 import axios from 'axios';
 
 
@@ -48,4 +48,17 @@ export const unlikeYawp = (yawpId) => dispatch => {
     .catch(err => {
       console.log(err)
     })
+}
+
+//Delete a Yawp
+
+export const deleteYawp = (yawpId) => dispatch => {
+  axios.delete(`./yawp/${yawpId}`)
+    .then(res => {
+      dispatch({
+        type: DELETE_YAWP,
+        payload: yawpId
+      })
+    })
+    .catch(err => console.log(err))
 }
