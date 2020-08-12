@@ -1,4 +1,4 @@
-import { SET_YAWPS, LIKE_YAWP, UNLIKE_YAWP, LOADING_DATA, DELETE_YAWP } from '../types';
+import { SET_YAWPS, LIKE_YAWP, UNLIKE_YAWP, LOADING_DATA, DELETE_YAWP, POST_YAWP } from '../types';
 
 const initialState = {
   yawps: [],
@@ -31,6 +31,14 @@ export default function(state =initialState, action) {
       state.yawps.splice(delIndex, 1);
       return {
         ...state
+      }
+    case POST_YAWP:
+      return {
+        ...state,
+        yawps: [
+          action.payload,
+          ...state.yawps
+        ]
       }
     default:
       return {

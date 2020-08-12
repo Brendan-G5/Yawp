@@ -1,11 +1,11 @@
-import { SET_YAWPS, LOADING_DATA, LIKE_YAWP, UNLIKE_YAWP, DELETE_YAWP } from '../types';
+import { SET_YAWPS, LOADING_DATA, LIKE_YAWP, UNLIKE_YAWP, DELETE_YAWP, SET_ERRORS, CLEAR_ERRORS, POST_YAWP, LOADING_UI } from '../types';
 import axios from 'axios';
 
 
 //Get all Yawps
 export const getYawps = () => dispatch => {
   dispatch({ type: LOADING_DATA });
-  axios.get('./yawps')
+  axios.get('/yawps')
     .then(res => {
       dispatch({
         type: SET_YAWPS,
@@ -20,10 +20,33 @@ export const getYawps = () => dispatch => {
     })
 }
 
+//Post Yawp
+
+export const postYawp = (newYawp) => (dispatch) => {
+  dispatch({type: LOADING_UI})
+  console.log(newYawp);
+  axios.post('/yawp', newYawp)
+    .then(res => {
+      dispatch({
+        type: POST_YAWP,
+        payload: res.data
+      });
+      dispatch({
+        type: CLEAR_ERRORS
+      })
+    })
+    .catch(err => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      })
+    })
+}
+
 
 //Like a Yawp
 export const likeYawp = (yawpId) => dispatch => {
-  axios.get(`./yawp/${yawpId}/like`)
+  axios.get(`/yawp/${yawpId}/like`)
     .then(res => {
       dispatch({
         type: LIKE_YAWP,
@@ -38,7 +61,7 @@ export const likeYawp = (yawpId) => dispatch => {
 
 //Unlike a Yawp
 export const unlikeYawp = (yawpId) => dispatch => {
-  axios.get(`./yawp/${yawpId}/unlike`)
+  axios.get(`/yawp/${yawpId}/unlike`)
     .then(res => {
       dispatch({
         type: UNLIKE_YAWP,
@@ -53,7 +76,7 @@ export const unlikeYawp = (yawpId) => dispatch => {
 //Delete a Yawp
 
 export const deleteYawp = (yawpId) => dispatch => {
-  axios.delete(`./yawp/${yawpId}`)
+  axios.delete(`/yawp/${yawpId}`)
     .then(res => {
       dispatch({
         type: DELETE_YAWP,
@@ -62,3 +85,5 @@ export const deleteYawp = (yawpId) => dispatch => {
     })
     .catch(err => console.log(err))
 }
+
+
