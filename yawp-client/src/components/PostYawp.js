@@ -16,21 +16,23 @@ import CloseIcon from '@material-ui/icons/Close';
 
 //Redux
 import { connect } from 'react-redux';
-import { postYawp } from '../redux/actions/dataActions';
+import { postYawp, clearErrors } from '../redux/actions/dataActions';
+
 
 const styles = theme => ({
   ...theme.spreadThis,
   submitButton: {
     position:'relative',
-    margin: '20px'
+    margin: '20px',
+    float:'right',
   },
   progressSpinner: {
     position:'absolute'
   },
   closeButton: {
     position: 'absolute',
-    left: '90%',
-    top: '10%'
+    left: '91%',
+    top: '6%'
   }
 })
 
@@ -50,8 +52,9 @@ class PostYawp extends Component {
     if (!nextProps.UI.errors && !nextProps.UI.loading){
       this.setState({
         body:'',
+        open: false
       })
-      this.handleClose()
+
     }
   }
 
@@ -62,6 +65,7 @@ class PostYawp extends Component {
   }
 
   handleClose = () => {
+    this.props.clearErrors();
     this.setState({
       open: false,
       errors: {}
@@ -123,6 +127,7 @@ class PostYawp extends Component {
 
 PostYawp.propTypes = {
   postYawp: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   UI: PropTypes.object.isRequired
 }
 
@@ -130,4 +135,4 @@ const mapStateToProps = (state) => ({
   UI: state.UI
 })
 
-export default connect(mapStateToProps, { postYawp })(withStyles(styles)(PostYawp))
+export default connect(mapStateToProps, { postYawp, clearErrors })(withStyles(styles)(PostYawp))

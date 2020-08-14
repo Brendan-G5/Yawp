@@ -5,7 +5,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import PropTypes from 'prop-types';
 import MyButton from '../util/MyButton';
-import DeleteYawp from '../components/DeleteYawp';
+import DeleteYawp from './DeleteYawp';
+import YawpDialog from './YawpDialog'
 
 //MUI
 import Card from '@material-ui/core/Card';
@@ -59,26 +60,26 @@ export class Yawp extends Component {
   }
   render() {
     dayjs.extend(relativeTime);
-    const { classes, yawp: { body, createdAt, userImage, userHandle, yawpId, likeCount, commentCount }, user: {authenticated, credentials: { handle }} } = this.props;
+    const { classes, yawp: { body, createdAt, userImage, userHandle, yawpId, likeCount, commentCount }, user: { authenticated, credentials: { handle } } } = this.props;
     const likeButton = !authenticated ? (
       <MyButton tip='Like'>
         <Link to='/login'>
-          <FavoriteBorder color='primary/>'/>
+          <FavoriteBorder color='primary/>' />
         </Link>
       </MyButton>
     ) : (
-      this.likedYawp() ? (
-        <MyButton tip ='Undo Like' onClick={this.unlikeYawp}>
-          <FavoriteIcon color='primary'/>
-        </MyButton>
-      ) : (
-        <MyButton tip ='Like' onClick={this.likeYawp}>
-          <FavoriteBorder color='primary'/>
-        </MyButton>
+        this.likedYawp() ? (
+          <MyButton tip='Undo Like' onClick={this.unlikeYawp}>
+            <FavoriteIcon color='primary' />
+          </MyButton>
+        ) : (
+            <MyButton tip='Like' onClick={this.likeYawp}>
+              <FavoriteBorder color='primary' />
+            </MyButton>
+          )
       )
-    )
     const deleteButton = authenticated && userHandle === handle ? (
-      <DeleteYawp yawpId={yawpId}/>
+      <DeleteYawp yawpId={yawpId} />
     ) : null
     return (
       <Card className={classes.card}>
@@ -96,7 +97,8 @@ export class Yawp extends Component {
           <MyButton tip="Comments">
             <ChatIcon color="primary" />
           </MyButton>
-          <span>{commentCount}Comments</span>
+          <span>{commentCount} Comments</span>
+          <YawpDialog yawpId={yawpId} userHandle={userHandle} />
         </CardContent>
       </Card>
     )

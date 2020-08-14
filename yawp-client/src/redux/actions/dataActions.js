@@ -1,4 +1,4 @@
-import { SET_YAWPS, LOADING_DATA, LIKE_YAWP, UNLIKE_YAWP, DELETE_YAWP, SET_ERRORS, CLEAR_ERRORS, POST_YAWP, LOADING_UI } from '../types';
+import { SET_YAWPS, LOADING_DATA, LIKE_YAWP, UNLIKE_YAWP, DELETE_YAWP, SET_ERRORS, CLEAR_ERRORS, POST_YAWP, LOADING_UI, SET_YAWP, STOP_LOADING_UI } from '../types';
 import axios from 'axios';
 
 
@@ -18,6 +18,24 @@ export const getYawps = () => dispatch => {
         payload: []
       })
     })
+}
+
+//Get one yawp
+export const getYawp = (yawpId) => dispatch => {
+  dispatch({
+    type: LOADING_UI
+  });
+  axios.get(`/yawp/${yawpId}`)
+    .then(res => {
+      dispatch({
+        type: SET_YAWP,
+        payload: res.data
+      })
+      dispatch({
+        type: STOP_LOADING_UI
+      })
+    })
+    .catch(err => console.log(err));
 }
 
 //Post Yawp
@@ -84,6 +102,12 @@ export const deleteYawp = (yawpId) => dispatch => {
       })
     })
     .catch(err => console.log(err))
+}
+
+export const clearErrors = () => (dispatch) => {
+  dispatch({
+    type: CLEAR_ERRORS
+  })
 }
 
 
